@@ -64,6 +64,29 @@ class MailboxViewModel @Inject constructor(
                         )
                     }
 
+                    MailBoxType.SCHEDULED -> {
+
+                        val scheduled = repository.getScheduledEmails()
+
+                        _emails.clear()
+
+                        _emails.addAll(
+                            scheduled.map {
+                                s ->
+                                EmailDto(
+                                    uid = s.uid,
+                                    from = s.fromEmail,
+                                    to = s.toEmail,
+                                    subject = s.subject,
+                                    body = s.body,
+                                    sentDate = s.scheduledAt ?: "",
+                                    read = false
+
+                                )
+                            }
+                        )
+                    }
+
 
                 }
 

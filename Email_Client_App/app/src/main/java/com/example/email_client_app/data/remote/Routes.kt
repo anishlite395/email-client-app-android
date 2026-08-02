@@ -12,6 +12,8 @@ object Routes {
 
     const val EMAIL_DETAIL = "email_detail"
 
+    const val SCHEDULED = "scheduled"
+
     const val DRAFTS = "drafts"
 
     const val COMPOSE = "compose"

@@ -1,7 +1,7 @@
 package com.example.email_client_app.data.dto
 
 data class ScheduledEmailDto(
-    val id: Long?,
+    val uid: Long,
     val fromEmail: String,
     val toEmail: String,
     val subject: String,

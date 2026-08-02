@@ -55,6 +55,9 @@ fun MailboxScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val selectedEmails = remember { mutableStateListOf<Long>() }
 
+    //Add this
+    val selectedDrafts = remember { mutableStateListOf<Long>() }
+
     LaunchedEffect(mailboxType) {
         viewModel.loadMailbox(mailboxType)
     }
