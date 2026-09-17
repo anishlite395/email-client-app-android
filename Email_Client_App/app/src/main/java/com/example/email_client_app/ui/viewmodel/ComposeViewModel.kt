@@ -1,6 +1,9 @@
 package com.example.email_client_app.ui.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.email_client_app.data.dto.DraftsDto
@@ -8,6 +11,7 @@ import com.example.email_client_app.data.dto.EmailDto
 import com.example.email_client_app.data.dto.MailRequestDto
 import com.example.email_client_app.data.repository.AuthRepository
 import com.example.email_client_app.data.repository.DraftsRepository
+import com.example.email_client_app.data.repository.InboxRepository
 import com.example.email_client_app.data.repository.SendRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -16,9 +20,16 @@ import javax.inject.Inject
 @HiltViewModel
 class ComposeViewModel @Inject constructor(
     private val repository: SendRepository,
-    private val draftRepository: DraftsRepository
+    private val draftRepository: DraftsRepository,
+    private val inboxRepository: InboxRepository
 ): ViewModel()
 {
+    var currentDraft by mutableStateOf<DraftsDto?>(null)
+        private set
+
+    var replyEmail by mutableStateOf<EmailDto?>(null)
+        private set
+
     fun sendEmail(
         to: String,
         subject: String,
@@ -28,6 +39,7 @@ class ComposeViewModel @Inject constructor(
     ){
 
         viewModelScope.launch {
+            Log.d("COMPOSE","Calling /email/send")
             try{
                 repository.sendEmail(
                     MailRequestDto(
@@ -40,6 +52,7 @@ class ComposeViewModel @Inject constructor(
                         references = null
                     )
                 )
+                Log.d("COMPOSE","Response Recieved")
                 onSuccess()
             }catch (e: Exception){
                 Log.e("COMPOSE","Send Failed",e)
@@ -77,6 +90,27 @@ class ComposeViewModel @Inject constructor(
                     "Draft save failed",
                     e
                 )
+            }
+        }
+    }
+
+    fun loadDraft(uid: Long){
+
+        viewModelScope.launch {
+            try{
+                currentDraft = draftRepository.getDraft(uid)
+            }catch(e: Exception){
+                Log.e("DRAFT","Failed loading draft",e)
+            }
+        }
+    }
+
+    fun loadReplyEmail(uid: Long){
+        viewModelScope.launch {
+            try{
+                replyEmail = inboxRepository.getEmail(uid)
+            }catch(e: Exception){
+                Log.e("REPLY","Failed loading email",e)
             }
         }
     }

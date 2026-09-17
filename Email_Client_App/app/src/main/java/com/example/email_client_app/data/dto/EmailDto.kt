@@ -13,5 +13,9 @@ data class EmailDto(
 
     val sentDate: String,
 
-    val read: Boolean
+    val read: Boolean,
+
+    val messageId: String? = null,
+
+    val references: List<String> = emptyList()
 )

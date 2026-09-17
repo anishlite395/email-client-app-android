@@ -1,6 +1,7 @@
 package com.example.email_client_app.data.repository
 
 import com.example.email_client_app.data.dto.EmailDto
+import com.example.email_client_app.data.dto.MailRequestDto
 import com.example.email_client_app.data.remote.ApiService
 import javax.inject.Inject
 
@@ -17,8 +18,10 @@ class InboxRepository @Inject constructor(private val api: ApiService) {
         read: Boolean
     ) = api.markAsRead(uid, read)
 
-    suspend fun deleteEmails(
-        uids: List<Long>
-    ) = api.deleteEmails(uids)
+    suspend fun replyEmail(
+        request: MailRequestDto
+    ) = api.replyEmail(request)
+
+
 
 }

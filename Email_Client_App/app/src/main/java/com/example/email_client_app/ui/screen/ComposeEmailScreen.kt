@@ -24,6 +24,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TimePickerDialog
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +47,8 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun ComposeEmailScreen(
     navController: NavController,
+    uid: Long? = null,
+    replyUid: Long? = null,
     viewModel: ComposeViewModel = hiltViewModel()
 ){
 
@@ -82,6 +85,47 @@ fun ComposeEmailScreen(
 
     var showDialog by remember {
         mutableStateOf(false)
+    }
+
+    LaunchedEffect(uid) {
+        uid?.let {
+            viewModel.loadDraft(it)
+        }
+    }
+
+    LaunchedEffect(viewModel.currentDraft) {
+        viewModel.currentDraft?.let {
+            to = it.to
+            subject = it.subject
+            body = it.body
+        }
+    }
+
+    LaunchedEffect(replyUid) {
+        replyUid?.let {
+            viewModel.loadReplyEmail(it)
+        }
+    }
+
+    val replyEmail = viewModel.replyEmail
+
+    LaunchedEffect(replyEmail) {
+        replyEmail?.let {
+            to = it.from
+            subject = if(it.subject.startsWith("Re:"))
+                         it.subject
+                      else
+                          "Re:${it.subject}"
+            body = """
+                ------------------------
+                
+                ${it.from} wrote:
+                
+                
+                ${it.body}
+            
+            """
+        }
     }
 
     fun handleBack(){

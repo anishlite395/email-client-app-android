@@ -1,6 +1,7 @@
 package com.example.email_client_app.ui.viewmodel
 
 import android.util.Log
+import android.util.Log.e
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -107,5 +108,34 @@ class MailboxViewModel @Inject constructor(
 
             onDone()
         }
+    }
+
+    fun deleteSelectedEmails(
+        mailBoxType: MailBoxType,
+        ids: List<Long>,
+        onSuccess: () -> Unit
+    ){
+        viewModelScope.launch {
+
+            when(mailBoxType){
+                MailBoxType.INBOX -> {
+                    repository.deleteEmails(ids)
+                }
+                MailBoxType.DRAFTS -> {
+                    repository.deleteDrafts(ids)
+                }
+
+                MailBoxType.SENT -> {
+                    repository.deleteSent(ids)
+                }
+
+                MailBoxType.SCHEDULED -> {
+
+                }
+            }
+            loadMailbox(mailBoxType)
+            onSuccess()
+        }
+
     }
 }

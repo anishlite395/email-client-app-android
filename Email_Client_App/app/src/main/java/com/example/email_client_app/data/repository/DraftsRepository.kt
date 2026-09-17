@@ -14,8 +14,10 @@ class DraftsRepository @Inject constructor(
         drafts: DraftsDto
     ) = api.saveDraft(drafts)
 
-    suspend fun deleteDrafts(
-        ids: List<Long>
-    ) = api.deleteDrafts(ids)
+    suspend fun getDraft(
+        uid: Long
+    ) = api.getDraft(uid)
+
+
 
 }

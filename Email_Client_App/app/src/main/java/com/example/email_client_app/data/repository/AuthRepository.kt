@@ -42,6 +42,13 @@ class AuthRepository @Inject constructor(private val api: ApiService) {
     suspend fun getScheduledEmails(
     ): List<ScheduledEmailDto> = api.getScheduledEmail()
 
+    suspend fun deleteEmails(
+        uids: List<Long>
+    ) = api.deleteEmails(uids)
+
+    suspend fun deleteSent(
+        uids: List<Long>
+    ) = api.deleteSent(uids)
 
 
 

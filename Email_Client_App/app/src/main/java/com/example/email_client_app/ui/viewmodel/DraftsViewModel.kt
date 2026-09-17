@@ -31,12 +31,7 @@ class DraftsViewModel @Inject constructor(
         }
     }
 
-    fun deleteDrafts(ids: List<Long>){
-        viewModelScope.launch {
-            repository.deleteDrafts(ids)
-            loadDrafts()
-        }
-    }
+
 
 
 }

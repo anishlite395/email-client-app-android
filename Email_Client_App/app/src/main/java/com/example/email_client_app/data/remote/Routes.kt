@@ -17,4 +17,8 @@ object Routes {
     const val DRAFTS = "drafts"
 
     const val COMPOSE = "compose"
+
+    const val COMPOSE_DRAFT = "compose/{uid}"
+
+    const val REPLY = "reply/{uid}"
 }
