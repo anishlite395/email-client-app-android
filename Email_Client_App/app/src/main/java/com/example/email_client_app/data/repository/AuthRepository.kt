@@ -4,6 +4,7 @@ import com.example.email_client_app.data.dto.DraftsDto
 import com.example.email_client_app.data.dto.LoginRequest
 import com.example.email_client_app.data.dto.MailRequestDto
 import com.example.email_client_app.data.dto.RegisterRequest
+import com.example.email_client_app.data.dto.ScheduledEmailDto
 import com.example.email_client_app.data.remote.ApiService
 import com.example.email_client_app.data.remote.RetrofitClient
 import javax.inject.Inject
@@ -38,6 +39,16 @@ class AuthRepository @Inject constructor(private val api: ApiService) {
         ids: List<Long>
     ) = api.deleteDrafts(ids)
 
+    suspend fun getScheduledEmails(
+    ): List<ScheduledEmailDto> = api.getScheduledEmail()
+
+    suspend fun deleteEmails(
+        uids: List<Long>
+    ) = api.deleteEmails(uids)
+
+    suspend fun deleteSent(
+        uids: List<Long>
+    ) = api.deleteSent(uids)
 
 
 

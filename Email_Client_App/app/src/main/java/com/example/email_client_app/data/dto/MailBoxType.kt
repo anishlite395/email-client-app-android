@@ -4,5 +4,7 @@ enum class MailBoxType {
     INBOX,
     SENT,
 
-    DRAFTS
+    DRAFTS,
+
+    SCHEDULED
 }

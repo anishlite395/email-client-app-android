@@ -32,12 +32,12 @@ interface ApiService{
         @Body request: LoginRequest
     ): Response<LoginResponse>
 
-    @GET("/inbox")
-    suspend fun getInbox(): List<EmailDto>
 
-    @GET("/sent")
-    suspend fun getSentEmails(): List<EmailDto>
 
+
+    // =========================
+    // DRAFTS SERVICE (NEW BACKEND)
+    // =========================
     @GET("/drafts")
     suspend fun getDrafts(): List<DraftsDto>
 
@@ -45,6 +45,11 @@ interface ApiService{
     suspend fun saveDraft(
         @Body draft: DraftsDto
     )
+
+    @GET("/drafts/{uid}")
+    suspend fun getDraft(
+        @Path("uid") uid: Long
+    ): DraftsDto
 
     @HTTP(
         method = "DELETE",
@@ -55,6 +60,12 @@ interface ApiService{
         @Body uids: List<Long>
     )
 
+    // =========================
+    // INBOX SERVICE (NEW BACKEND)
+    // =========================
+
+    @GET("/inbox")
+    suspend fun getInbox(): List<EmailDto>
 
     @GET("inbox/{uid}")
     suspend fun getEmail(
@@ -88,4 +99,28 @@ interface ApiService{
 
     @GET("/email/scheduled")
     suspend fun getScheduledEmail(): List<ScheduledEmailDto>
+
+    // =========================
+    // SENT SERVICE (NEW BACKEND)
+    // =========================
+
+    @GET("/sent/{uid}")
+    suspend fun getSentEmail(
+        @Path("uid") uid: Long
+    ): EmailDto
+
+    @PUT("/sent/read/{uid}")
+    suspend fun markSentAsRead(
+        @Path("uid") uid: Long
+    )
+
+    @GET("/sent")
+    suspend fun getSentEmails(): List<EmailDto>
+
+
+    @HTTP(method = "DELETE",path = "/sent/delete",hasBody = true)
+    suspend fun deleteSent(
+        @Body uids: List<Long>
+    )
+
 }

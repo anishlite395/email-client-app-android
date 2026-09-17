@@ -1,6 +1,9 @@
 package com.example.email_client_app.ui.navigation
 
+import EmailDetailScreen
 import LoginScreen
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -9,10 +12,10 @@ import androidx.navigation.navArgument
 import com.example.email_client_app.data.dto.MailBoxType
 import com.example.email_client_app.data.remote.Routes
 import com.example.email_client_app.ui.screen.ComposeEmailScreen
-import com.example.email_client_app.ui.screen.EmailDetailScreen
 import com.example.email_client_app.ui.screen.MailboxScreen
 import com.example.email_client_app.ui.screen.RegisterScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavGraph(){
 
@@ -70,24 +73,75 @@ fun AppNavGraph(){
 
         }
 
+        composable(Routes.SCHEDULED){
+            MailboxScreen(
+                mailboxType = MailBoxType.SCHEDULED,
+                navController = navController
+            )
+        }
+
         composable(
-            route = "${Routes.EMAIL_DETAIL}/{uid}",
+            route = "${Routes.EMAIL_DETAIL}/{mailboxType}/{uid}",
             arguments = listOf(
+                navArgument("mailboxType"){
+                    type = NavType.StringType
+                },
                 navArgument("uid"){
                     type = NavType.LongType
                 }
             )
         ){
-            val uid = it.arguments?.getLong("uid") ?: 0L
+                backStackEntry ->
+            val mailboxType =
+                backStackEntry.arguments
+                    ?.getString("mailboxType")
+                    ?.let {
+                        MailBoxType.valueOf(it)
+                    }
+                    ?: MailBoxType.INBOX
+
+            val uid = backStackEntry.arguments?.getLong("uid") ?: 0L
 
             EmailDetailScreen(
                 uid = uid,
+                mailboxType = mailboxType,
                 navController
             )
         }
 
         composable(Routes.COMPOSE) {
             ComposeEmailScreen(navController)
+        }
+
+        composable(route = Routes.COMPOSE_DRAFT,
+            arguments = listOf(
+                navArgument("uid"){
+                    type = NavType.LongType
+                }
+            )){ backStackEntry ->
+
+                val uid = backStackEntry.arguments?.getLong("uid")
+
+                ComposeEmailScreen(
+                    navController = navController,
+                    uid = uid
+                )
+        }
+
+        composable(route = Routes.REPLY,
+            arguments = listOf(
+                navArgument("uid"){
+                    type = NavType.LongType
+                }
+            )
+        ) {
+            backStackEntry ->
+                val uid = backStackEntry.arguments?.getLong("uid")
+
+                ComposeEmailScreen(
+                    navController = navController,
+                    replyUid = uid
+                )
         }
     }
 }

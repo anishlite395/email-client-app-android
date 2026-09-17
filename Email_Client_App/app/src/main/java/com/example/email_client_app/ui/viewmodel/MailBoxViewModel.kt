@@ -1,6 +1,7 @@
 package com.example.email_client_app.ui.viewmodel
 
 import android.util.Log
+import android.util.Log.e
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -64,6 +65,29 @@ class MailboxViewModel @Inject constructor(
                         )
                     }
 
+                    MailBoxType.SCHEDULED -> {
+
+                        val scheduled = repository.getScheduledEmails()
+
+                        _emails.clear()
+
+                        _emails.addAll(
+                            scheduled.map {
+                                s ->
+                                EmailDto(
+                                    uid = s.uid,
+                                    from = s.fromEmail,
+                                    to = s.toEmail,
+                                    subject = s.subject,
+                                    body = s.body,
+                                    sentDate = s.scheduledAt ?: "",
+                                    read = false
+
+                                )
+                            }
+                        )
+                    }
+
 
                 }
 
@@ -84,5 +108,34 @@ class MailboxViewModel @Inject constructor(
 
             onDone()
         }
+    }
+
+    fun deleteSelectedEmails(
+        mailBoxType: MailBoxType,
+        ids: List<Long>,
+        onSuccess: () -> Unit
+    ){
+        viewModelScope.launch {
+
+            when(mailBoxType){
+                MailBoxType.INBOX -> {
+                    repository.deleteEmails(ids)
+                }
+                MailBoxType.DRAFTS -> {
+                    repository.deleteDrafts(ids)
+                }
+
+                MailBoxType.SENT -> {
+                    repository.deleteSent(ids)
+                }
+
+                MailBoxType.SCHEDULED -> {
+
+                }
+            }
+            loadMailbox(mailBoxType)
+            onSuccess()
+        }
+
     }
 }
